@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Todos | Adonis</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css" />
+</head>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mithril/2.0.0-rc.7/mithril.min.js"></script>
+  <script>
+    let ListTodoModel = {
+      todos: [],
+
+      getTodos() {
+        m.request('http://localhost:3333/api/todos', {
+          body: {
+            '_csrf': '{{ csrfToken }}',
+          }
+        }).then(response => {
+          ListTodoModel.todos = response
+        })
+      }
+    }
+
+    let CreateTodoModel = {
+      text: '',
+
+      submitTodo(value) {
+        m.request('http://localhost:3333/api/todos', {
+          method: 'post',
+          body: {
+            '_csrf': '{{ csrfToken }}',
+            text: CreateTodoModel.text
+          }
+        }).then(response => {
+          CreateTodoModel.text = ''
+          ListTodoModel.getTodos()
+        })
+      }
+    }
+
+    let DeleteTodoModel = {
+      deleteTodo(id) {
+        m.request('http://localhost:3333/api/todos/'+id, {
+          method: 'delete',
+          body: {
+            '_csrf': '{{ csrfToken }}'
+          }
+        }).then(response => {
+          console.log('Todo deleted.')
+          ListTodoModel.getTodos()
+        })
+      }
+    }
+
+    let Todos = {
+      oninit() {
+        ListTodoModel.getTodos()
+      },
+
+      view() {
+        return [
+          m('.container', [
+            m('.columns.is-centered', [
+              m('.column.is-one-third', [
+                m('nav.panel', [
+                  m('p.panel-heading', 'Todos'),
+                  m('.panel-block', [
+                    m('.field.has-addons', {
+                      style: 'width: 100%'
+                    }, [
+                      m('p.control', {
+                          style: 'width: 100%'
+                        }, [
+                        m('input.input.is-small', {
+                          type: 'text',
+                          placeholder: 'Add todo...',
+                          oninput(e) {
+                            CreateTodoModel.text = e.target.value
+                          },
+                          value: CreateTodoModel.text
+                        })
+                      ]),
+                      m('p.control', [
+                        m('button.button.is-info.is-small', {
+                          onclick() {
+                            CreateTodoModel.submitTodo()
+                          }
+                        }, 'Submit')
+                      ])
+                    ])
+                  ]),
+                  ListTodoModel.todos.map(todo => {
+                    return m('.panel-block', {
+                      style: 'justify-content: space-between'
+                    }, [
+                      todo.text,
+                      m('button.button.is-small.is-danger', {
+                        onclick() {
+                          DeleteTodoModel.deleteTodo(todo.id)
+                        }
+                      }, 'Delete')
+                    ])
+                  })
+                ])
+              ])
+            ])
+          ])
+        ]
+      }
+    }
+
+    m.mount(document.body, Todos)
+  </script>
+</body>
+</html>
