@@ -27,7 +27,7 @@
     let CreateTodoModel = {
       text: '',
 
-      submitTodo(value) {
+      submitTodo() {
         m.request('http://localhost:3333/api/todos', {
           method: 'post',
           body: {
@@ -68,27 +68,32 @@
                 m('nav.panel', [
                   m('p.panel-heading', 'Todos'),
                   m('.panel-block', [
-                    m('.field.has-addons', {
-                      style: 'width: 100%'
+                    m('form', {
+                      style: 'width: 100%',
+                      onsubmit(e) {
+                        e.preventDefault()
+                        CreateTodoModel.submitTodo()
+                      }
                     }, [
-                      m('p.control', {
-                          style: 'width: 100%'
-                        }, [
-                        m('input.input.is-small', {
-                          type: 'text',
-                          placeholder: 'Add todo...',
-                          oninput(e) {
-                            CreateTodoModel.text = e.target.value
-                          },
-                          value: CreateTodoModel.text
-                        })
-                      ]),
-                      m('p.control', [
-                        m('button.button.is-info.is-small', {
-                          onclick() {
-                            CreateTodoModel.submitTodo()
-                          }
-                        }, 'Submit')
+                      m('.field.has-addons', [
+                        m('p.control', {
+                            style: 'width: 100%'
+                          }, [
+                          m('input.input.is-small', {
+                            type: 'text',
+                            placeholder: 'Add todo...',
+                            oninput(e) {
+                              CreateTodoModel.text = e.target.value
+                            },
+                            value: CreateTodoModel.text
+                          })
+                        ]),
+                        m('p.control', [
+                          m('input.button.is-info.is-small', {
+                            type: 'submit',
+                            value: 'Submit'
+                          })
+                        ])
                       ])
                     ])
                   ]),
