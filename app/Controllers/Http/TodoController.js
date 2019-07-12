@@ -1,5 +1,6 @@
 'use strict'
 
+const Ws = use('Ws')
 const Todo = use('App/Models/Todo')
 
 class TodoController {
@@ -13,12 +14,14 @@ class TodoController {
     todo.text = request.input('text')
     todo.completed = false
     await todo.save()
+    Ws.getChannel('todos').topic('todos').broadcast('todo::new', todo)
     return todo
   }
 
   async destroy({ params }) {
     let todo = await Todo.find(params.id)
     await todo.delete()
+    Ws.getChannel('todos').topic('todos').broadcast('todo::delete', todo)
     return todo
   }
 }

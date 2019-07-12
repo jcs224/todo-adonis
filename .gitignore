@@ -17,3 +17,6 @@ database/development.sqlite
 
 # SQLite database
 database/*.sqlite
+
+# Front-end assets
+resources/assets/.cache
