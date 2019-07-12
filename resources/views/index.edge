@@ -32,6 +32,17 @@
       console.log(error)
     })
 
+    todoNotif.on('todo::new', (todo) => {
+      ListTodoModel.todos.push(todo)
+      m.redraw()
+    })
+
+    todoNotif.on('todo::delete', (todo) => {
+      let index = ListTodoModel.todos.map(td => td.id).indexOf(todo.id)
+      ListTodoModel.todos.splice(index, 1)
+      m.redraw()
+    })
+
     let ListTodoModel = {
       todos: [],
 
@@ -71,7 +82,6 @@
             '_csrf': '{{ csrfToken }}'
           }
         }).then(response => {
-          console.log('Todo deleted.')
           ListTodoModel.getTodos()
         })
       }
