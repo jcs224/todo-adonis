@@ -27,7 +27,7 @@ let ListTodoModel = {
   getTodos() {
     m.request('http://localhost:3333/api/todos', {
       body: {
-        '_csrf': '{{ csrfToken }}',
+        '_csrf': document.querySelector("meta[name='csrf-token']").getAttribute('content'),
       }
     }).then(response => {
       ListTodoModel.todos = response
@@ -42,7 +42,7 @@ let CreateTodoModel = {
     m.request('http://localhost:3333/api/todos', {
       method: 'post',
       body: {
-        '_csrf': '{{ csrfToken }}',
+        '_csrf': document.querySelector("meta[name='csrf-token']").getAttribute('content'),
         text: CreateTodoModel.text
       }
     }).then(response => {
@@ -57,7 +57,7 @@ let DeleteTodoModel = {
     m.request('http://localhost:3333/api/todos/'+id, {
       method: 'delete',
       body: {
-        '_csrf': '{{ csrfToken }}'
+        '_csrf': document.querySelector("meta[name='csrf-token']").getAttribute('content'),
       }
     }).then(response => {
       console.log('Todo deleted.')
