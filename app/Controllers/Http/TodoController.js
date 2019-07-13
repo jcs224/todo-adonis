@@ -24,6 +24,14 @@ class TodoController {
     Ws.getChannel('todos').topic('todos').broadcast('todo::delete', todo)
     return todo
   }
+
+  async update({ request, params }) {
+    let todo = await Todo.find(params.id)
+    todo.completed = request.input('completed')
+    await todo.save()
+    Ws.getChannel('todos').topic('todos').broadcast('todo::update', todo)
+    return todo
+  }
 }
 
 module.exports = TodoController
