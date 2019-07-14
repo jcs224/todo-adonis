@@ -119,6 +119,7 @@
     }
 
     let Todos = {
+      currentTab: 'Uncompleted',
       oninit() {
         ListTodoModel.getTodos()
       },
@@ -160,7 +161,21 @@
                       ])
                     ])
                   ]),
-                  ListTodoModel.todos.map(todo => {
+                  m('.panel-tabs', [
+                    m('a', {
+                      class: Todos.currentTab == 'Uncompleted' ? 'is-active' : null,
+                      onclick() {
+                        Todos.currentTab = 'Uncompleted'
+                      }
+                    }, 'Uncompleted'),
+                    m('a', {
+                      class: Todos.currentTab == 'Completed' ? 'is-active' : null,
+                      onclick() {
+                        Todos.currentTab = 'Completed'
+                      }
+                    }, 'Completed'),
+                  ]),
+                  Todos.currentTab == 'Uncompleted' ? ListTodoModel.todos.filter(todo => !todo.completed).map(todo => {
                     return m('.panel-block', {
                       style: 'justify-content: space-between'
                     }, [
@@ -184,7 +199,34 @@
                         }
                       }, 'Delete')
                     ])
-                  })
+                  }) : null,
+                  Todos.currentTab == 'Completed' ? ListTodoModel.todos.filter(todo => todo.completed).map(todo => {
+                    return m('.panel-block', {
+                      style: 'justify-content: space-between'
+                    }, [
+                      m('label.checkbox', [
+                        m('input', {
+                          type: 'checkbox',
+                          onchange(e) {
+                            if (todo.completed == false) {
+                              UpdateTodoModel.completeTodo(todo.id)
+                            } else {
+                              UpdateTodoModel.uncompleteTodo(todo.id)
+                            }
+                          },
+                          checked: todo.completed
+                        }),
+                        m('span', {
+                          style: 'text-decoration: line-through'
+                        }, todo.text)
+                      ]),
+                      m('button.button.is-small.is-danger', {
+                        onclick() {
+                          DeleteTodoModel.deleteTodo(todo.id)
+                        }
+                      }, 'Delete')
+                    ])
+                  }) : null
                 ])
               ])
             ])
