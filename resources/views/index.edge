@@ -13,7 +13,7 @@
   <script src="https://unpkg.com/@adonisjs/websocket-client"></script>
 
   <script>
-    const ws = adonis.Ws('ws://localhost:3333')
+    const ws = adonis.Ws('ws://{{ appHost }}:{{ appPort }}')
     ws.connect()
 
     ws.on('open', () => {
@@ -52,7 +52,7 @@
       todos: [],
 
       getTodos() {
-        m.request('http://localhost:3333/api/todos', {
+        m.request('{{ appUrl }}/api/todos', {
           body: {
             '_csrf': '{{ csrfToken }}',
           }
@@ -66,7 +66,7 @@
       text: '',
 
       submitTodo() {
-        m.request('http://localhost:3333/api/todos', {
+        m.request('{{ appUrl }}/api/todos', {
           method: 'post',
           body: {
             '_csrf': '{{ csrfToken }}',
@@ -81,7 +81,7 @@
 
     let DeleteTodoModel = {
       deleteTodo(id) {
-        m.request('http://localhost:3333/api/todos/'+id, {
+        m.request('{{ appUrl }}/api/todos/'+id, {
           method: 'delete',
           body: {
             '_csrf': '{{ csrfToken }}'
@@ -94,7 +94,7 @@
 
     let UpdateTodoModel = {
       completeTodo(id) {
-        m.request('http://localhost:3333/api/todos/'+id, {
+        m.request('{{ appUrl }}/api/todos/'+id, {
           method: 'put',
           body: {
             '_csrf': '{{ csrfToken }}',
@@ -106,7 +106,7 @@
       },
 
       uncompleteTodo(id) {
-        m.request('http://localhost:3333/api/todos/'+id, {
+        m.request('{{ appUrl }}/api/todos/'+id, {
           method: 'put',
           body: {
             '_csrf': '{{ csrfToken }}',
