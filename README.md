@@ -13,6 +13,7 @@ Make edits to the `.env` file. Make sure the `HOST`, `PORT`, and `APP_URL` are c
 
 Then, run these commands:
 ```
+yarn install
 npx adonis migration:run
 npx adonis serve --dev
 ```
